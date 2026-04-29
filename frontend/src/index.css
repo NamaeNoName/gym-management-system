@@ -1,0 +1,240 @@
+:root {
+  --primary: #00ff88;
+  --primary-hover: #00e577;
+  --bg: #0f0f0f;
+  --card-bg: #1e1e1e;
+  --input-bg: #2a2a2a;
+  --text-main: #ffffff;
+  --text-muted: #b0b0b0;
+  --danger: #ff4d4d;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg);
+  color: var(--text-main);
+  line-height: 1.5;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+/* --- АВТОРИЗАЦИЯ (ВЕРХНИЙ УГОЛ) --- */
+.auth-menu {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid #333;
+  z-index: 1000;
+  width: 280px;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: var(--input-bg);
+  border: 1px solid #444;
+  border-radius: 8px;
+  color: white;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.login-box input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.login-box button, .user-info button {
+  width: 100%;
+  padding: 12px;
+  background: var(--primary);
+  color: black;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.login-box button:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.user-info {
+  text-align: center;
+}
+
+.user-info span {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.toggle-auth {
+  display: block;
+  margin-top: 15px;
+  font-size: 13px;
+  color: var(--primary);
+  text-align: center;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* --- СЕТКА И КАРТОЧКИ --- */
+.main-title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  letter-spacing: -1px;
+}
+
+.app-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.membership-card {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  border: 1px solid #333;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.membership-card:hover {
+  transform: translateY(-10px);
+  border-color: var(--primary);
+  box-shadow: 0 10px 40px rgba(0, 255, 136, 0.1);
+}
+
+.membership-card h2 {
+  color: var(--primary);
+  margin: 15px 0;
+}
+
+.membership-card img {
+  width: 50px;
+  height: 50px;
+  filter: invert(1);
+  opacity: 0.8;
+}
+
+.price {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 20px 0;
+}
+
+.enroll-btn {
+  background: var(--primary);
+  color: black;
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* --- МОДАЛЬНОЕ ОКНО --- */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 3000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: var(--card-bg);
+  padding: 40px;
+  border-radius: 24px;
+  border: 1px solid var(--primary);
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--shadow);
+}
+
+.trainer-options button {
+  width: 100%;
+  padding: 15px;
+  margin: 10px 0;
+  background: var(--input-bg);
+  color: white;
+  border: 1px solid #444;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: 0.3s;
+}
+
+.trainer-options button:hover {
+  background: var(--primary);
+  color: black;
+  border-color: var(--primary);
+}
+
+.close-btn {
+  margin-top: 20px;
+  background: none;
+  color: var(--text-muted);
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+/* --- АДМИН И ТРЕНЕР ПАНЕЛИ --- */
+.admin-section, .trainer-section {
+  background: #151515;
+  padding: 30px;
+  border-radius: 20px;
+  margin-bottom: 50px;
+  border: 1px solid #222;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: var(--input-bg);
+  margin-bottom: 8px;
+  border-radius: 8px;
+}
+
+.list-item button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.trainee-card {
+  background: #252525;
+  padding: 20px;
+  border-radius: 12px;
+  border-left: 4px solid var(--primary);
+  margin-bottom: 10px;
+}
