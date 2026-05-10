@@ -238,3 +238,450 @@ body {
   border-left: 4px solid var(--primary);
   margin-bottom: 10px;
 }
+/* Дополнения к твоим стилям */
+.admin-card {
+  background: var(--input-bg);
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-card input {
+  padding: 10px;
+  background: #111;
+  border: 1px solid #333;
+  color: white;
+  border-radius: 6px;
+}
+
+.admin-card button {
+  background: var(--primary);
+  border: none;
+  padding: 10px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.users-list-admin {
+  margin-top: 30px;
+}
+
+.del-btn {
+  margin-top: 10px;
+  background: none;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.badge {
+  background: var(--primary);
+  color: black;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.membership-card-v2 {
+  background: var(--card-bg);
+  padding: 30px;
+  border-radius: 20px;
+  border: 1px solid #333;
+  text-align: center;
+}
+
+/* Личный кабинет юзера */
+.user-dashboard {
+  margin-bottom: 30px;
+}
+
+.status-card {
+  background: linear-gradient(135deg, #1e1e1e 0%, #111111 100%);
+  padding: 25px;
+  border-radius: 20px;
+  border: 1px solid var(--primary);
+  box-shadow: var(--shadow);
+}
+
+.highlight {
+  color: var(--primary);
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+/* Расширенная модалка */
+.info-modal {
+  max-width: 500px !important;
+}
+
+.plan-details-box {
+  background: #111;
+  padding: 15px;
+  border-radius: 12px;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.details-list {
+  list-style: none;
+  padding: 0;
+}
+
+.details-list li {
+  margin-bottom: 8px;
+  color: var(--text-muted);
+}
+
+.trainer-selection-box {
+  text-align: left;
+}
+
+.trainer-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.trainer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #2a2a2a;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.trainer-row:hover {
+  background: #333;
+  border-color: var(--primary);
+}
+
+.select-mini-btn {
+  background: var(--primary);
+  border: none;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.primary-text {
+  color: var(--primary);
+  margin-top: 0;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.edit-btn {
+  flex: 1;
+  background: #333;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.edit-btn:hover {
+  background: var(--primary);
+  color: black;
+}
+
+.cancel-edit {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+/* ЭКРАН АВТОРИЗАЦИИ */
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: radial-gradient(circle, #1a1a1a 0%, #050505 100%);
+}
+
+.auth-card-main {
+  background: var(--card-bg);
+  padding: 40px;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+  border: 1px solid #333;
+  text-align: center;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.auth-form input {
+  padding: 14px;
+  background: var(--input-bg);
+  border: 1px solid #444;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+}
+
+.auth-submit-btn {
+  background: var(--primary);
+  color: black;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.auth-submit-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+.auth-toggle {
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.auth-toggle:hover {
+  color: var(--primary);
+}
+
+/* ШАПКА ГЛАВНОГО ЭКРАНА */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #222;
+  margin-bottom: 40px;
+}
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.user-meta {
+  text-align: right;
+}
+
+.user-email {
+  display: block;
+  font-weight: bold;
+}
+
+.logout-btn {
+  background: #2a2a2a;
+  color: #ff4d4d;
+  border: 1px solid #444;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #ff4d4d;
+  color: white;
+}
+.admin-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.admin-tabs button {
+  background: #222;
+  border: 1px solid #333;
+  color: #888;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.admin-tabs button.active {
+  background: var(--primary);
+  color: black;
+  font-weight: bold;
+}
+
+.admin-content-box {
+  background: #1a1a1a;
+  padding: 25px;
+  border-radius: 16px;
+  border: 1px solid #333;
+}
+
+/* Таблица пользователей */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.admin-table th, .admin-table td {
+  padding: 15px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.role-select {
+  background: #111;
+  color: white;
+  border: 1px solid #444;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.role-badge {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.role-badge.Admin { background: #ff4d4d; color: white; }
+.role-badge.Trainer { background: #00ff88; color: black; }
+.role-badge.User { background: #555; color: white; }
+
+.del-btn-small {
+  background: none;
+  border: 1px solid #ff4d4d;
+  color: #ff4d4d;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.del-btn-small:hover {
+  background: #ff4d4d;
+  color: white;
+}
+
+.manage-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  background: #222;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+
+/* Вкладки админа */
+.admin-tabs {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 10px;
+}
+
+.admin-tabs button {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 10px 15px;
+  transition: 0.3s;
+}
+
+.admin-tabs button.active {
+  color: var(--primary);
+  border-bottom: 2px solid var(--primary);
+  font-weight: bold;
+}
+
+/* Таблица пользователей */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  background: #1a1a1a;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.admin-table th, .admin-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #333;
+}
+
+.admin-table select {
+  background: #2a2a2a;
+  color: white;
+  border: 1px solid #444;
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+.del-btn-small {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Список управления тарифами */
+.manage-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.manage-item {
+  background: #1a1a1a;
+  padding: 15px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #333;
+}
+
+.manage-item .actions button {
+  background: none;
+  border: 1px solid #444;
+  color: white;
+  margin-left: 10px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.manage-item .actions button:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}

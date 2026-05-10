@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import MembershipCard from './components/MembershipCard';
 import './index.css';
 
 function App() {
@@ -7,13 +6,16 @@ function App() {
   const [trainers, setTrainers] = useState([]);
   const [user, setUser] = useState(null);
   const [allUsers, setAllUsers] = useState([]);
-  const [trainees, setTrainees] = useState([]);
+  const [myStudents, setMyStudents] = useState([]);
   
+  const [adminTab, setAdminTab] = useState('add'); // 'add', 'edit', 'users'
   const [isRegistering, setIsRegistering] = useState(false);
-  const [showTrainerModal, setShowTrainerModal] = useState(null); // ID выбранного плана для записи
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
   
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
+  const [newPlan, setNewPlan] = useState({ title: '', price: '' });
+  const [editingPlanId, setEditingPlanId] = useState(null);
+  const [selectedPlanDetails, setSelectedPlanDetails] = useState(null);
 
   useEffect(() => {
     refreshData();
@@ -27,132 +29,197 @@ function App() {
       fetch('http://localhost:5000/api/gym/users').then(res => res.json()).then(setAllUsers);
     }
     if (user?.role === 'Trainer') {
-      fetch(`http://localhost:5000/api/gym/my-trainees/${user._id}`).then(res => res.json()).then(setTrainees);
+      fetch(`http://localhost:5000/api/gym/trainer-students/${user._id}`).then(res => res.json()).then(setMyStudents);
     }
   };
 
-  const handleLogin = () => {
-    fetch('http://localhost:5000/api/gym/users/login', {
+  const handleAuth = () => {
+    const url = isRegistering ? 'users' : 'users/login';
+    fetch(`http://localhost:5000/api/gym/${url}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    }).then(res => res.json()).then(data => {
-      if (data.user) setUser(data.user);
-      else alert("Пользователь не найден");
+      body: JSON.stringify({ email: login, password })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.message && !data.user) return alert(data.message);
+      if (isRegistering) {
+        setIsRegistering(false);
+        alert("Аккаунт создан!");
+      } else {
+        setUser(data.user);
+      }
     });
   };
 
-  const handleRegister = () => {
-    fetch('http://localhost:5000/api/gym/users', {
-      method: 'POST',
+  const updateRole = (userId, newRole) => {
+    fetch('http://localhost:5000/api/gym/users/role', {
+      method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password: "123", role: "User" })
-    }).then(res => res.json()).then(() => {
-      alert("Регистрация успешна! Теперь войдите.");
-      setIsRegistering(false);
+      body: JSON.stringify({ userId, newRole })
+    }).then(() => {
+      refreshData();
+      alert("Роль изменена!");
     });
   };
 
-  const confirmEnroll = (trainerId) => {
-    fetch('http://localhost:5000/api/gym/enroll-full', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: user._id, planId: showTrainerModal, trainerId })
-    }).then(res => res.json()).then(data => {
-      alert(data.message);
-      setUser(data.user);
-      setShowTrainerModal(null);
-    });
-  };
-
-  const deleteItem = (type, id) => {
-    if(window.confirm("Удалить?")) {
-      fetch(`http://localhost:5000/api/gym/${type}/${id}`, { method: 'DELETE' }).then(refreshData);
-    }
-  };
+  if (!user) return (
+    <div className="auth-page">
+      <div className="auth-card-main">
+        <h1 className="logo">GYM<span>FIT</span></h1>
+        <h2>{isRegistering ? "Регистрация" : "Вход"}</h2>
+        <div className="auth-form">
+          <input placeholder="Логин" onChange={e => setLogin(e.target.value)} />
+          <input type="password" placeholder="Пароль" onChange={e => setPassword(e.target.value)} />
+          <button className="auth-submit-btn" onClick={handleAuth}>
+            {isRegistering ? "Создать аккаунт" : "Войти"}
+          </button>
+          <p className="auth-toggle" onClick={() => setIsRegistering(!isRegistering)}>
+            {isRegistering ? "Уже есть логин? Войти" : "Нет логина? Создать"}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="container">
-      {/* МЕНЮ АВТОРИЗАЦИИ */}
-      <div className="auth-menu">
-        {!user ? (
-          <div className="login-box">
-            {isRegistering && <input placeholder="Имя" onChange={e => setName(e.target.value)} />}
-            <input placeholder="Email" onChange={e => setEmail(e.target.value)} />
-            <button onClick={isRegistering ? handleRegister : handleLogin}>
-              {isRegistering ? "Создать аккаунт" : "Войти"}
-            </button>
-            <p className="toggle-auth" onClick={() => setIsRegistering(!isRegistering)}>
-              {isRegistering ? "Уже есть аккаунт? Войти" : "Нет аккаунта? Регистрация"}
-            </p>
+      <header className="main-header">
+        <h1 className="logo">GYM<span>FIT</span></h1>
+        <div className="header-user">
+          <div className="user-meta">
+            <span>{user.email} <b className="badge">{user.role}</b></span>
           </div>
-        ) : (
-          <div className="user-info">
-            <span>{user.name} (<b>{user.role}</b>)</span>
-            <button onClick={() => setUser(null)} style={{background: '#ff4444'}}>Выйти</button>
-          </div>
-        )}
-      </div>
+          <button onClick={() => setUser(null)} className="logout-btn">Выйти</button>
+        </div>
+      </header>
 
-      <h1 className="main-title">Gym Management System (ID 10)</h1>
-
-      {/* ПАНЕЛИ АДМИНА И ТРЕНЕРА (БЕЗ ИЗМЕНЕНИЙ) */}
-      {user?.role === 'Admin' && (
+      {user.role === 'Admin' && (
         <section className="admin-section">
-          <h2>Админ-панель</h2>
-          <div className="admin-grid">
-            <div className="admin-card">
-              <h3>Пользователи</h3>
-              {allUsers.filter(u => u.role === 'User').map(u => (
-                <div key={u._id} className="list-item">{u.name} <button onClick={() => deleteItem('users', u._id)}>🗑️</button></div>
-              ))}
-            </div>
-            <div className="admin-card">
-              <h3>Тренеры</h3>
-              {trainers.map(t => (
-                <div key={t._id} className="list-item">{t.name} <button onClick={() => deleteItem('trainers', t._id)}>🗑️</button></div>
-              ))}
-            </div>
+          <div className="admin-tabs">
+            <button className={adminTab === 'add' ? 'active' : ''} onClick={() => setAdminTab('add')}>➕ Добавить тариф</button>
+            <button className={adminTab === 'edit' ? 'active' : ''} onClick={() => setAdminTab('edit')}>⚙️ Управление тарифами</button>
+            <button className={adminTab === 'users' ? 'active' : ''} onClick={() => setAdminTab('users')}>👥 Аккаунты</button>
+          </div>
+
+          <div className="admin-content">
+            {adminTab === 'add' && (
+              <form className="admin-card" onSubmit={e => {
+                e.preventDefault();
+                const method = editingPlanId ? 'PUT' : 'POST';
+                const url = editingPlanId ? `/memberships/${editingPlanId}` : '/memberships';
+                fetch(`http://localhost:5000/api/gym${url}`, {
+                  method, headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(newPlan)
+                }).then(() => {
+                  refreshData();
+                  setNewPlan({title:'', price:''});
+                  setEditingPlanId(null);
+                  alert("Сохранено!");
+                });
+              }}>
+                <h3>{editingPlanId ? "✏️ Редактировать" : "➕ Новый тариф"}</h3>
+                <input placeholder="Название" value={newPlan.title} onChange={e => setNewPlan({...newPlan, title: e.target.value})} />
+                <input placeholder="Цена" value={newPlan.price} onChange={e => setNewPlan({...newPlan, price: e.target.value})} />
+                <button type="submit">Сохранить</button>
+                {editingPlanId && <button type="button" onClick={() => {setEditingPlanId(null); setNewPlan({title:'', price:''})}}>Отмена</button>}
+              </form>
+            )}
+
+            {adminTab === 'edit' && (
+              <div className="manage-grid">
+                {plans.map(p => (
+                  <div key={p._id} className="manage-item">
+                    <span><b>{p.title}</b> — {p.price} сом</span>
+                    <div className="actions">
+                      <button onClick={() => {setNewPlan(p); setEditingPlanId(p._id); setAdminTab('add');}}>✏️</button>
+                      <button onClick={() => fetch(`http://localhost:5000/api/gym/memberships/${p._id}`, {method:'DELETE'}).then(refreshData)}>🗑️</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {adminTab === 'users' && (
+              <div className="users-list">
+                <table className="admin-table">
+                  <thead><tr><th>Логин</th><th>Роль</th><th>Действие</th></tr></thead>
+                  <tbody>
+                    {allUsers.map(u => (
+                      <tr key={u._id}>
+                        <td>{u.email}</td>
+                        <td>
+                          <select value={u.role} onChange={(e) => updateRole(u._id, e.target.value)}>
+                            <option value="User">User</option>
+                            <option value="Trainer">Trainer</option>
+                            <option value="Admin">Admin</option>
+                          </select>
+                        </td>
+                        <td>
+                          <button className="del-btn-small" onClick={() => fetch(`http://localhost:5000/api/gym/users/${u._id}`, {method:'DELETE'}).then(refreshData)}>Удалить</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </section>
       )}
 
-      {/* МОДАЛЬНОЕ ОКНО ВЫБОРА ТРЕНЕРА */}
-      {showTrainerModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h3>Выберите тренера:</h3>
-            <div className="trainer-options">
-              {trainers.map(t => (
-                <button key={t._id} onClick={() => confirmEnroll(t._id)}>
-                  {t.name} ({t.specialization})
-                </button>
-              ))}
+      {user.role === 'Trainer' && (
+        <section className="trainer-section">
+          <h2>👥 Мои подопечные</h2>
+          <div className="students-grid">
+            {myStudents.map(s => (
+              <div key={s._id} className="trainee-card">
+                <h4>{s.email}</h4>
+                <p>Тариф: {s.enrolledPlan?.title || "Не выбран"}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <main className="main-content">
+        <h2 className="main-title">Доступные тарифы</h2>
+        <div className="app-container">
+          {plans.map(plan => (
+            <div key={plan._id} className="membership-card-v2">
+              <h2>{plan.title}</h2>
+              <div className="price">{plan.price} сом</div>
+              <button className="enroll-btn-v2" onClick={() => setSelectedPlanDetails(plan)}>Выбрать</button>
             </div>
-            <button className="close-btn" onClick={() => setShowTrainerModal(null)}>Отмена</button>
+          ))}
+        </div>
+      </main>
+
+      {selectedPlanDetails && (
+        <div className="modal-overlay">
+          <div className="modal-content info-modal">
+            <h3>Выберите тренера для: {selectedPlanDetails.title}</h3>
+            <div className="trainer-picker">
+              {trainers.length > 0 ? trainers.map(t => (
+                <div key={t._id} className="trainer-row" onClick={() => {
+                  fetch('http://localhost:5000/api/gym/enroll-full', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: user._id, planId: selectedPlanDetails._id, trainerId: t._id })
+                  }).then(res => res.json()).then(data => {
+                    setUser(data.user);
+                    setSelectedPlanDetails(null);
+                    alert("Запись прошла успешно!");
+                  });
+                }}>
+                  <span><b>{t.email}</b></span>
+                  <button className="select-mini-btn">Записаться</button>
+                </div>
+              )) : <p>Нет доступных тренеров</p>}
+            </div>
+            <button className="close-btn" onClick={() => setSelectedPlanDetails(null)}>Закрыть</button>
           </div>
         </div>
       )}
-
-      {/* СПИСОК АБОНЕМЕНТОВ */}
-      <div className="app-container">
-        {plans.map(plan => (
-          <div key={plan._id} className="membership-card">
-            <img src="https://cdn-icons-png.flaticon.com/512/69/69840.png" alt="gym" />
-            <h2>{plan.title}</h2>
-            <p className="price">{plan.price} сом</p>
-            <button 
-              className="enroll-btn" 
-              onClick={() => user ? setShowTrainerModal(plan._id) : alert("Сначала войдите в систему!")}
-            >
-              Записаться
-            </button>
-            {user?.role === 'Admin' && (
-              <button onClick={() => deleteItem('memberships', plan._id)} style={{marginTop: '10px', background: '#444'}}>Удалить план</button>
-            )}
-          </div>
-        ))}
-      </div>
     </div>
   );
 }

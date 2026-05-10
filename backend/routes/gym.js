@@ -1,68 +1,124 @@
 import express from "express";
+const router = express.Router();
 import Membership from "../models/Membership.js";
-import Trainer from "../models/Trainer.js";
 import User from "../models/User.js";
 
-const router = express.Router();
+// --- АВТОРИЗАЦИЯ ---
+router.post("/users/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    
+    if (!user) return res.status(404).json({ message: "Пользователь не найден" });
+    if (user.password !== password) return res.status(401).json({ message: "Неверный пароль" });
 
-// --- АБОНЕМЕНТЫ ---
+    // Populate теперь будет работать корректно, так как мы поправили ref в модели
+    const populatedUser = await User.findById(user._id)
+      .populate('enrolledPlan')
+      .populate('assignedTrainer');
+
+    res.json({ user: populatedUser || user });
+  } catch (err) {
+    console.error("Ошибка при входе:", err);
+    res.status(500).json({ message: "Ошибка сервера: " + err.message });
+  }
+});
+
+router.post("/users", async (req, res) => {
+  try {
+    const { email, password, role } = req.body;
+    const candidate = await User.findOne({ email });
+    if (candidate) return res.status(400).json({ message: "Этот логин уже занят" });
+
+    const newUser = await User.create({ email, password, role: role || "User" });
+    res.status(201).json(newUser);
+  } catch (err) {
+    console.error("Ошибка регистрации:", err);
+    res.status(500).json({ message: "Ошибка регистрации: " + err.message });
+  }
+});
+
+// --- УПРАВЛЕНИЕ РОЛЯМИ ---
+router.patch("/users/role", async (req, res) => {
+  try {
+    const { userId, newRole } = req.body;
+    const updatedUser = await User.findByIdAndUpdate(userId, { role: newRole }, { new: true });
+    res.json(updatedUser);
+  } catch (err) {
+    res.status(500).json({ message: "Ошибка обновления роли" });
+  }
+});
+
+// --- АДМИН ПАНЕЛЬ ---
+router.get("/users", async (req, res) => {
+  try {
+    const users = await User.find().populate('enrolledPlan assignedTrainer');
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// --- ТАРИФЫ ---
 router.get("/memberships", async (req, res) => {
-  const plans = await Membership.find();
-  res.json(plans);
+  try {
+    const plans = await Membership.find();
+    res.json(plans);
+  } catch (err) {
+    res.status(500).json({ message: "Ошибка загрузки тарифов" });
+  }
 });
 
 router.post("/memberships", async (req, res) => {
-  const newPlan = await Membership.create(req.body);
-  res.status(201).json(newPlan);
+  try {
+    const newPlan = await Membership.create(req.body);
+    res.status(201).json(newPlan);
+  } catch (err) {
+    res.status(400).json({ message: "Ошибка создания тарифа" });
+  }
+});
+
+// --- УДАЛЕНИЕ ---
+router.delete("/users/:id", async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ message: "Пользователь удален" });
+  } catch (err) {
+    res.status(500).json({ message: "Ошибка удаления" });
+  }
 });
 
 router.delete("/memberships/:id", async (req, res) => {
-  await Membership.findByIdAndDelete(req.params.id);
-  res.json({ message: "План удален" });
+  try {
+    await Membership.findByIdAndDelete(req.params.id);
+    res.json({ message: "Тариф удален" });
+  } catch (err) {
+    res.status(500).json({ message: "Ошибка удаления" });
+  }
 });
 
-// --- ТРЕНЕРЫ ---
-router.get("/trainers", async (req, res) => {
-  const trainers = await Trainer.find();
-  res.json(trainers);
-});
-
-router.delete("/trainers/:id", async (req, res) => {
-  await Trainer.findByIdAndDelete(req.params.id);
-  res.json({ message: "Тренер удален" });
-});
-
-// --- ПОЛЬЗОВАТЕЛИ (Для Админа) ---
-router.get("/users", async (req, res) => {
-  const users = await User.find().populate('enrolledPlan assignedTrainer');
-  res.json(users);
-});
-
-router.delete("/users/:id", async (req, res) => {
-  await User.findByIdAndDelete(req.params.id);
-  res.json({ message: "Пользователь удален" });
-});
-
-// --- АВТОРИЗАЦИЯ И ЛОГИКА ЗАПИСИ ---
-router.post("/users/login", async (req, res) => {
-  const user = await User.findOne({ email: req.body.email }).populate('enrolledPlan assignedTrainer');
-  user ? res.json({ user }) : res.status(404).json({ message: "Не найден" });
-});
-
+// --- ЗАПИСЬ ---
 router.post("/enroll-full", async (req, res) => {
-  const { userId, planId, trainerId } = req.body;
-  const user = await User.findByIdAndUpdate(
-    userId, 
-    { enrolledPlan: planId, assignedTrainer: trainerId }, 
-    { new: true }
-  ).populate('enrolledPlan assignedTrainer');
-  res.json({ message: "Запись успешно завершена!", user });
+  try {
+    const { userId, planId, trainerId } = req.body;
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { enrolledPlan: planId, assignedTrainer: trainerId },
+      { new: true }
+    ).populate('enrolledPlan assignedTrainer');
+    res.json({ user: updatedUser });
+  } catch (err) {
+    res.status(500).json({ message: "Ошибка записи: " + err.message });
+  }
 });
 
-// Список учеников для конкретного тренера
-router.get("/my-trainees/:trainerId", async (req, res) => {
-  const trainees = await User.find({ assignedTrainer: req.params.trainerId }).populate('enrolledPlan');
-  res.json(trainees);
+router.get("/trainers", async (req, res) => {
+  try {
+    const trainers = await User.find({ role: 'Trainer' });
+    res.json(trainers);
+  } catch (err) {
+    res.status(500).json({ message: "Ошибка загрузки тренеров" });
+  }
 });
 
 export default router;
