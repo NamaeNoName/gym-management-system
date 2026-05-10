@@ -1,5 +1,5 @@
 GYMFIT - Full-Stack Management System
-1. PROJECT DESCRIPTION (15 pts)
+1. PROJECT DESCRIPTION 
 
 GYMFIT is a comprehensive gym management tool. It allows administrators to manage pricing plans, trainers to track their clients, and users to enroll in memberships.
 API Endpoints:
@@ -16,7 +16,7 @@ API Endpoints:
 
     GET /api/gym/trainers - List of active trainers
 
-2. BACKEND & AUTHORIZATION (25 pts)
+2. BACKEND & AUTHORIZATION 
 
     Architecture: Controller -> Service -> Model structure for clean code.
 
@@ -30,13 +30,13 @@ API Endpoints:
 
         User: Plan browsing and enrollment.
 
-3. FRONTEND & UI/UX (25 pts)
+3. FRONTEND & UI/UX 
 
     Structure: Modular React components and organized page routing.
 
     UI/UX: Interactive forms, real-time data updates, and mobile-friendly navigation.
 
-4. DATABASE & CRUD (15 pts)
+4. DATABASE & CRUD 
 
 The system uses MongoDB Atlas with 3 main collections:
 
@@ -65,7 +65,7 @@ Frontend Setup:
 
     npm run dev
 
-6. TEAM MEMBERS & ROLES (20 pts)
+6. TEAM MEMBERS & ROLES
 
     Samat (NamaeNoName): Frontend.
 
