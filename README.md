@@ -1,64 +1,72 @@
-GYMFIT — Management System
+GYMFIT - Full-Stack Management System
+1. PROJECT DESCRIPTION (15 pts)
 
-A full-stack web application for gym management, featuring role-based access for Admins, Trainers, and Users. Built with the MERN stack (MongoDB, Express, React, Node.js).
-Features
+GYMFIT is a comprehensive gym management tool. It allows administrators to manage pricing plans, trainers to track their clients, and users to enroll in memberships.
+API Endpoints:
 
-    Admin Panel: Create/edit membership plans and manage user roles.
+    POST /api/gym/users/login - User authentication
 
-    Trainer Dashboard: View assigned students and their active plans.
+    POST /api/gym/users - New account registration
 
-    User Interface: Browse and enroll in membership plans with a preferred trainer.
+    GET /api/gym/memberships - View all available plans
 
-    Authentication: Secure login and registration system.
+    POST /api/gym/memberships - Create new plan (Admin only)
 
-Installation & Setup
-1. Clone the Repository
-Bash
+    PATCH /api/gym/users/role - Change user permissions (Admin only)
 
-git clone https://github.com/NamaeNoName/gym-management-system.git
-cd gym-management-system
+    GET /api/gym/trainers - List of active trainers
 
-2. Backend Configuration
+2. BACKEND & AUTHORIZATION (25 pts)
 
-    Navigate to the backend folder: cd backend
+    Architecture: Controller -> Service -> Model structure for clean code.
 
-    Install dependencies: npm install
+    Auth: Role-based access control (RBAC).
 
-    Create a .env file in the backend directory and add your MongoDB URI:
-    Фрагмент кода
+    Roles:
 
-    MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/gymDB?retryWrites=true&w=majority
+        Admin: Full system management.
 
-    Start the server: node server.js (or npm run dev if nodemon is installed).
+        Trainer: Access to student lists and assigned plans.
 
-3. Frontend Configuration
+        User: Plan browsing and enrollment.
 
-    Open a new terminal and navigate to the frontend folder: cd frontend
+3. FRONTEND & UI/UX (25 pts)
 
-    Install dependencies: npm install
+    Structure: Modular React components and organized page routing.
 
-    Start the development server: npm run dev
+    UI/UX: Interactive forms, real-time data updates, and mobile-friendly navigation.
 
-    Open your browser at http://localhost:5173
+4. DATABASE & CRUD (15 pts)
 
-MongoDB Setup (Atlas)
+The system uses MongoDB Atlas with 3 main collections:
 
-This project uses MongoDB Atlas for cloud data storage.
+    Users: Account info and role references.
 
-    Create a Cluster: Sign up at mongodb.com and create a free Shared Cluster.
+    Memberships: Plan details and pricing.
 
-    Database Access: Create a database user with a username and password.
+    Assignments: Relations between users and trainers.
 
-    Network Access: Add IP address 0.0.0.0/0 to allow connection from anywhere.
+5. INSTALLATION GUIDE
+Backend Setup:
 
-    Connection String: Click "Connect" -> "Drivers" and copy the connection string into your .env file.
+    cd backend
 
-Initial Setup (Adding Users)
+    npm install
 
-Since the database is empty on the first run:
+    Create .env with: MONGO_URI=your_link
 
-    Register an Admin: Go to the "Create Account" section in the app and register your first user.
+    node server.js
 
-    Change Role: By default, new users are assigned the User role. To make yourself an Admin, you can manually change the role field in your MongoDB Atlas collection to Admin.
+Frontend Setup:
 
-    Add Trainers: Once you are an Admin, you can change other registered users' roles to Trainer via the Admin Dashboard to test the trainer-student assignment logic.
+    cd frontend
+
+    npm install
+
+    npm run dev
+
+6. TEAM MEMBERS & ROLES (20 pts)
+
+    Samat (NamaeNoName): Frontend.
+
+    Muhammad (okm47): Backend.
